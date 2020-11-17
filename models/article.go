@@ -44,7 +44,7 @@ func GetArticleTotal(maps interface{}) (count int) {
 
 func GetArticles(pageNum int, pageSize int, maps interface{}) (articles []Article) {
 	//offset (pageNum-1)*pageSize
-	db.Preload("Tag").Where(maps).Offset(pageNum).Limit(pageSize).Find(articles)
+	db.Preload("Tag").Where(maps).Offset(pageNum).Limit(pageSize).Find(&articles)
 	return
 }
 
