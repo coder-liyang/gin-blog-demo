@@ -17,6 +17,7 @@ import (
 func GetTags(c *gin.Context) {
 	name := c.Query("name")
 	maps := make(map[string]interface{})
+	maps["deleted_on"] = 0
 	data := make(map[string]interface{})
 	if name != "" {
 		maps["name"] = name
