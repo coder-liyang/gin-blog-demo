@@ -15,7 +15,7 @@ type Tag struct {
 
 //没生效
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreateOn", time.Now().Unix())
+	scope.SetColumn("CreatedOn", time.Now().Unix())
 	return nil
 }
 
