@@ -28,7 +28,7 @@ const (
 	FATAL
 )
 
-func init() {
+func Setup() {
 	filePath := getLogFileFullPath()
 	F = openLogFile(filePath)
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
@@ -61,7 +61,7 @@ func setPrefix(level Level) {
 	if ok {
 		logPrefix = fmt.Sprintf("[%s][%s:%d]", levelFlags[level], filepath.Base(file), line)
 	} else {
-		logPrefix = fmt.Sprintln("[%s]", levelFlags[level])
+		logPrefix = fmt.Sprintf("[%s]", levelFlags[level])
 	}
 	logger.SetPrefix(logPrefix)
 }
