@@ -3,14 +3,15 @@ package models
 type Article struct {
 	Model
 
-	TagId      int    `json:"tag_id" gorm:"index"`
-	Tag        Tag    `json:"tag"`
-	Title      string `json:"title"`
-	Desc       string `json:"desc"`
-	Content    string `json:"content"`
-	CreatedBy  string `json:"created_by"`
-	ModifiedBy string `json:"modified_by"`
-	State      int    `json:"state"`
+	TagId         int    `json:"tag_id" gorm:"index"`
+	Tag           Tag    `json:"tag"`
+	Title         string `json:"title"`
+	Desc          string `json:"desc"`
+	Content       string `json:"content"`
+	CreatedBy     string `json:"created_by"`
+	ModifiedBy    string `json:"modified_by"`
+	State         int    `json:"state"`
+	CoverImageUrl string `json:"cover_image_Url"`
 }
 
 func ExistArticleByID(id int) bool {
