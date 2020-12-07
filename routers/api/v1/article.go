@@ -2,10 +2,12 @@ package v1
 
 import (
 	"gin-blog/models"
+	"gin-blog/pkg/app"
 	"gin-blog/pkg/e"
 	"gin-blog/pkg/logging"
 	"gin-blog/pkg/setting"
 	"gin-blog/pkg/util"
+	"gin-blog/service/article_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
@@ -14,30 +16,37 @@ import (
 
 //获取一篇文章
 func GetArticle(c *gin.Context) {
+	appG := app.Gin{c}
 	id := com.StrTo(c.Param("id")).MustInt()
 
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("id必须大于0")
 
-	code := e.INVALID_PARAMS
 	var data interface{}
-	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
-			code = e.SUCCESS
-		} else {
-			code = e.ERROR_NOT_EXIST_ARTICLE
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info(err.Key, err.Message)
-		}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"data": data,
-		"msg":  e.GetMsg(code),
-	})
+	articleService := article_service.Article{ID: id}
+	exists, err := articleService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, data)
+		return
+	}
+
+	data, err = articleService.Get()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, data)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+	return
 }
 
 //获取多篇文章

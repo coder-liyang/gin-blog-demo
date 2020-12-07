@@ -34,10 +34,10 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) (articles []Articl
 	return
 }
 
-func GetArticle(id int) (article Article) {
-	db.Where("id = ?", id).First(&article)
-	db.Model(&article).Related(&article.Tag)
-	return
+func GetArticle(id int) (*Article, error) {
+	var article Article
+	err := db.Where("id = ? and deleted_on =?", id, 0).First(&article).Related(&article.Tag).Error
+	return &article, err
 }
 
 func EditArticle(id int, data interface{}) bool {
